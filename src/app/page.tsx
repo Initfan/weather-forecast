@@ -8,15 +8,17 @@ import {
   CloudLightning,
   CloudDrizzle,
   Wind,
+  CloudFog,
 } from "lucide-react";
-import { ForecastData, WeatherData } from "@/utils/type";
+import { CurrentWeatherData, ForecastData, WeatherData } from "@/utils/type";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import Image from "next/image";
 
 // Komponen utama aplikasi cuaca
 export default function WeatherApp() {
   const [location, setLocation] = useState("Jakarta");
-  const [weather, setWeather] = useState<WeatherData>();
+  const [weather, setWeather] = useState<CurrentWeatherData>();
   const [forecast, setForecast] = useState<ForecastData[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -29,52 +31,53 @@ export default function WeatherApp() {
 
     try {
       const req = await fetch(
-        `http://api.weatherapi.com/v1/current.json?key=ac6f651b9a494baf85c50206251005&q=${location}&aqi=no`
+        `http://api.weatherapi.com/v1/forecast.json?key=ac6f651b9a494baf85c50206251005&q=${location}&days=5`
       );
       const res = await req.json();
-      console.log(res);
 
       setWeather({
-        city: location,
-        temp: units === "metric" ? res.current.temp_c : res.current.temp_f,
-        humidity: res.current.humidity,
-        windSpeed:
-          units === "metric" ? res.current.wind_kph : res.current.wind_mph,
-        condition: res.current.condition.text,
-        feels_like:
+        cloud: res.current.cloud,
+        city: res.location.name,
+        condition: {
+          code: res.current.condition.code,
+          icon: res.current.condition.icon,
+          text: res.current.condition.text,
+        },
+        feelslike:
           units === "metric"
             ? res.current.feelslike_c
             : res.current.feelslike_f,
+        humidity: res.current.humidity,
+        is_day: res.current.is_day,
+        temp: units === "metric" ? res.current.temp_c : res.current.temp_f,
+        windSpeed:
+          units === "metric" ? res.current.wind_kph : res.current.wind_mph,
       });
 
       // Data perkiraan 5 hari
-      setForecast([
-        {
-          day: "Senin",
-          temp: units === "metric" ? 29 : 84,
-          condition: "cerah",
-        },
-        {
-          day: "Selasa",
-          temp: units === "metric" ? 28 : 82,
-          condition: "berawan",
-        },
-        {
-          day: "Rabu",
-          temp: units === "metric" ? 27 : 81,
-          condition: "hujan ringan",
-        },
-        {
-          day: "Kamis",
-          temp: units === "metric" ? 26 : 79,
-          condition: "hujan",
-        },
-        {
-          day: "Jumat",
-          temp: units === "metric" ? 28 : 82,
-          condition: "cerah berawan",
-        },
-      ]);
+      setForecast(
+        res.forecast.forecastday.map((day: any) => ({
+          date: new Date(day.date).toLocaleString("id-ID", {
+            weekday: "long",
+            month: "long",
+            day: "numeric",
+          }),
+          day: {
+            maxtemp: units === "metric" ? day.day.maxtemp_c : day.day.maxtemp_f,
+            mintemp: units === "metric" ? day.day.mintemp_c : day.day.mintemp_f,
+            avgtemp: units === "metric" ? day.day.avgtemp_c : day.day.avgtemp_f,
+            maxwind:
+              units === "metric" ? day.day.maxwind_kph : day.day.maxwind_mph,
+            totalprecip: day.day.totalprecip_mm,
+            avghumidity: day.day.avghumidity,
+          },
+          condition: {
+            code: day.day.condition.code,
+            icon: day.day.condition.icon,
+            text: day.day.condition.text,
+          },
+        }))
+      );
 
       setLoading(false);
     } catch (error) {
@@ -89,27 +92,22 @@ export default function WeatherApp() {
     fetchWeather();
   }, []);
 
-  // Mendapatkan ikon yang sesuai berdasarkan kondisi cuaca
   const getWeatherIcon = (condition: string) => {
-    switch (condition) {
-      case "cerah":
-        return <Sun size={32} className="text-yellow-500" />;
-      case "berawan":
-        return <Cloud size={32} className="text-gray-500" />;
-      case "hujan ringan":
-        return <CloudDrizzle size={32} className="text-blue-400" />;
-      case "hujan":
-        return <CloudRain size={32} className="text-blue-500" />;
-      case "badai":
-        return <CloudLightning size={32} className="text-purple-500" />;
-      case "salju":
-        return <CloudSnow size={32} className="text-blue-200" />;
-      default:
-        return <Cloud size={32} className="text-gray-400" />;
+    console.log(condition);
+    const rain = ["moderate rain", "patchy rain nearby", "patchy rain"];
+    const snow = ["light snow", "heavy snow", "snow"];
+
+    if (rain.includes(condition)) {
+      return <CloudRain size={32} className="text-blue-500" />;
+    } else if (snow.includes(condition)) {
+      return <CloudSnow size={32} className="text-blue-200" />;
+    } else if (condition === "sunny") {
+      return <Sun size={32} className="text-yellow-500" />;
+    } else if (condition === "mist") {
+      return <Cloud size={32} className="text-gray-500" />;
     }
   };
 
-  // Handler untuk ubah lokasi
   const handleLocationChange = (e: any) => {
     setLocation(e.target!.value);
   };
@@ -118,6 +116,8 @@ export default function WeatherApp() {
   const handleSubmit = () => {
     fetchWeather();
   };
+
+  console.log(weather?.condition);
 
   // Handler untuk ubah unit suhu
   const toggleUnits = () => {
@@ -184,8 +184,10 @@ export default function WeatherApp() {
             <div className="flex justify-between items-center mb-4">
               <h2 className="text-2xl font-semibold">{weather.city}</h2>
               <div className="flex items-center">
-                {getWeatherIcon(weather.condition)}
-                <span className="ml-2 text-gray-600">{weather.condition}</span>
+                {getWeatherIcon(weather.condition.text.toLowerCase())}
+                <span className="ml-2 text-gray-600">
+                  {weather.condition.text}
+                </span>
               </div>
             </div>
 
@@ -194,7 +196,7 @@ export default function WeatherApp() {
             </div>
 
             <div className="text-center text-gray-500 mb-4">
-              Terasa seperti: {weather.feels_like}°
+              Terasa seperti: {weather.feelslike}°
               {units === "metric" ? "C" : "F"}
             </div>
 
@@ -222,10 +224,12 @@ export default function WeatherApp() {
             <div className="grid grid-cols-5 gap-2">
               {forecast.map((day, index) => (
                 <div key={index} className="flex flex-col items-center p-2">
-                  <div className="font-medium">{day.day}</div>
-                  <div className="my-2">{getWeatherIcon(day.condition)}</div>
+                  <div className="font-medium">{day.date.toString()}</div>
+                  <div className="my-2">
+                    {getWeatherIcon(day.condition.text.toLowerCase())}
+                  </div>
                   <div className="text-sm">
-                    {day.temp}°{units === "metric" ? "C" : "F"}
+                    {day.day.maxtemp}°{units === "metric" ? "C" : "F"}
                   </div>
                 </div>
               ))}
@@ -234,7 +238,7 @@ export default function WeatherApp() {
         )}
 
         <div className="text-center text-gray-600 mt-6 text-sm">
-          Data diperbarui terakhir: {new Date().toLocaleString("id-ID")}
+          {/* Data diperbarui terakhir: {new Date().toLocaleString("id-ID")} */}
         </div>
       </div>
     </div>
