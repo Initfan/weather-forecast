@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono,  } from "next/font/google";
+import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -16,9 +16,9 @@ export const metadata: Metadata = {
   title: "Weather Forecasting",
   description: "A Simple Report Weather Forecasting App",
   icons: {
-    icon: "/favicon.ico",
-    shortcut: "/favicon.ico",
-    apple: "/apple-touch-icon.png",
+    icon: "/cloud-icon.png",
+    shortcut: "/cloud-icon.png",
+    apple: "/cloud-icon.png",
   },
 };
 
