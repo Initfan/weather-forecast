@@ -1,19 +1,9 @@
 "use client";
 import { useState, useEffect } from "react";
-import {
-  Sun,
-  Cloud,
-  CloudRain,
-  CloudSnow,
-  CloudLightning,
-  CloudDrizzle,
-  Wind,
-  CloudFog,
-} from "lucide-react";
+import { Sun, Cloud, CloudRain, CloudSnow } from "lucide-react";
 import { CurrentWeatherData, ForecastData, WeatherData } from "@/utils/type";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import Image from "next/image";
 
 // Komponen utama aplikasi cuaca
 export default function WeatherApp() {
