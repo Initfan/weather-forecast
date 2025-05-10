@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import { Sun, Cloud, CloudRain, CloudSnow } from "lucide-react";
-import { CurrentWeatherData, ForecastData, WeatherData } from "@/utils/type";
+import { CurrentWeatherData, ForecastData } from "@/utils/type";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
