@@ -60,11 +60,11 @@ export default function WeatherApp() {
               units === "metric" ? day.day.maxwind_kph : day.day.maxwind_mph,
             totalprecip: day.day.totalprecip_mm,
             avghumidity: day.day.avghumidity,
-          },
-          condition: {
-            code: day.day.condition.code,
-            icon: day.day.condition.icon,
-            text: day.day.condition.text,
+            condition: {
+              code: day.day.condition.code,
+              icon: day.day.condition.icon,
+              text: day.day.condition.text,
+            },
           },
         }))
       );
@@ -83,8 +83,12 @@ export default function WeatherApp() {
   }, [fetchWeather]);
 
   const getWeatherIcon = (condition: string) => {
-    console.log(condition);
-    const rain = ["moderate rain", "patchy rain nearby", "patchy rain"];
+    const rain = [
+      "moderate rain",
+      "patchy rain nearby",
+      "patchy rain",
+      "patchy light drizzle",
+    ];
     const snow = ["light snow", "heavy snow", "snow"];
 
     if (rain.includes(condition)) {
@@ -107,12 +111,12 @@ export default function WeatherApp() {
     fetchWeather();
   };
 
-  console.log(weather?.condition);
-
   // Handler untuk ubah unit suhu
   const toggleUnits = () => {
     setUnits(units === "metric" ? "imperial" : "metric");
   };
+
+  console.log(forecast);
 
   return (
     <main className="h-screen overflow-y-scroll bg-gradient-to-r from-indigo-500 via-blue-500 to-cyan-500 ">
@@ -240,7 +244,7 @@ export default function WeatherApp() {
           )}
 
           <div className="text-center text-gray-600 mt-6 text-sm">
-            {/* Data diperbarui terakhir: {new Date().toLocaleString("id-ID")} */}
+            Data diperbarui terakhir: {new Date().toLocaleString("id-ID")}
           </div>
         </div>
       </div>
