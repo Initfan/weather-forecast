@@ -20,9 +20,13 @@ export default function WeatherApp() {
     setError(null);
 
     try {
-      const req = await fetch(
-        `http://api.weatherapi.com/v1/forecast.json?key=ac6f651b9a494baf85c50206251005&q=${location}&days=5`
-      );
+      const req = await fetch("api/weather", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ location, units }),
+      });
       const res = await req.json();
 
       setWeather({
