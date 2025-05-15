@@ -46,7 +46,7 @@ export default function WeatherApp() {
 
       // Data perkiraan 5 hari
       setForecast(
-        res.forecast.forecastday.map((day: any) => ({
+        res.forecast.forecastday.map((day: ForecastData) => ({
           date: new Date(day.date).toLocaleString("id-ID", {
             weekday: "long",
             month: "long",
@@ -80,7 +80,7 @@ export default function WeatherApp() {
   // Menjalankan fungsi saat komponen dimuat pertama kali
   useEffect(() => {
     fetchWeather();
-  }, []);
+  }, [fetchWeather]);
 
   const getWeatherIcon = (condition: string) => {
     console.log(condition);
@@ -225,10 +225,13 @@ export default function WeatherApp() {
                   <div key={index} className="flex flex-col items-center p-2">
                     <div className="font-medium">{day.date.toString()}</div>
                     <div className="my-2">
-                      {getWeatherIcon(day.condition.text.toLowerCase())}
+                      {getWeatherIcon(day.day.condition.text.toLowerCase())}
                     </div>
                     <div className="text-sm">
-                      {day.day.maxtemp}°{units === "metric" ? "C" : "F"}
+                      {units === "metric"
+                        ? day.day.avgtemp_c
+                        : day.day.avgtemp_f}
+                      °{units === "metric" ? "C" : "F"}
                     </div>
                   </div>
                 ))}

@@ -4,17 +4,25 @@ export interface ForecastData {
   // condition: string;
   date: Date;
   day: {
-    maxtemp: number;
-    mintemp: number;
+    maxtemp_c: number;
+    mintemp_c: number;
+    maxtemp_f: number;
+    mintemp_f: number;
+    avgtemp_c: number;
+    avgtemp_f: number;
+    maxwind_kph: number;
+    maxwind_mph: number;
+    totalprecip_mm: number;
+    totalprecip_in: number;
     avgtemp: number;
     maxwind: number;
     totalprecip: number;
     avghumidity: number;
-  };
-  condition: {
-    code: number;
-    icon: string;
-    text: string;
+    condition: {
+      code: number;
+      icon: string;
+      text: string;
+    };
   };
 }
 
