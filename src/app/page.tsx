@@ -4,6 +4,9 @@ import { Sun, Cloud, CloudRain, CloudSnow } from "lucide-react";
 import { CurrentWeatherData, ForecastData } from "@/utils/type";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import Image from "next/image";
+import logo from "@/assets/cloud-background.jpg";
+import { url } from "inspector";
 
 // Komponen utama aplikasi cuaca
 export default function WeatherApp() {
@@ -115,122 +118,132 @@ export default function WeatherApp() {
   };
 
   return (
-    <div className="flex flex-col items-center min-h-screen bg-gradient-to-br from-blue-200 to-blue-400 p-4">
-      <div className="w-full max-w-md mx-auto">
-        <h1 className="text-3xl font-bold text-center my-4">Aplikasi Cuaca</h1>
+    <main className="h-screen overflow-y-scroll bg-gradient-to-r from-indigo-500 via-blue-500 to-cyan-500 ">
+      {/* Classname bg-gradient-to-br from-blue-200 to-blue-400 */}
+      <div
+        className="flex flex-col items-center min-h-screen p-4 "
+        // style={{
+        //   background: `url("../assets/cloud-background.jpg") no-repeat center center fixed`,
+        // }}
+      >
+        <div className="w-full max-w-md mx-auto">
+          <h1 className="text-3xl font-bold text-center my-4 text-white">
+            Aplikasi Cuaca
+          </h1>
 
-        {/* Pencarian */}
-        <div className="bg-white rounded-lg shadow-lg p-6 mb-6">
-          <div className="flex mb-6 space-x-2">
-            <Input
-              type="text"
-              placeholder="Masukkan nama kota..."
-              value={location}
-              onChange={handleLocationChange}
-              // className="flex-1 p-2 rounded-l border border-gray-300 focus:outline-none"
-              onKeyPress={(e) => {
-                if (e.key === "Enter") {
-                  handleSubmit();
-                }
-              }}
-            />
-            <Button
-              onClick={handleSubmit}
-              // className="bg-blue-600 text-white px-4 py-2 rounded-r hover:bg-blue-700 transition"
-            >
-              Cari
-            </Button>
-          </div>
-
-          {/* Toggle unit suhu */}
-          <div className="flex justify-end mb-4">
-            <button
-              onClick={toggleUnits}
-              className="bg-gray-200 px-3 py-1 rounded text-sm hover:bg-gray-300 transition"
-            >
-              {units === "metric" ? "°C" : "°F"} →{" "}
-              {units === "metric" ? "°F" : "°C"}
-            </button>
-          </div>
-        </div>
-
-        {/* Loading state */}
-        {loading && (
-          <div className="flex justify-center py-8">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-700"></div>
-          </div>
-        )}
-
-        {/* Error state */}
-        {error && (
-          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
-            {error}
-          </div>
-        )}
-
-        {/* Cuaca saat ini */}
-        {weather && !loading && (
+          {/* Pencarian */}
           <div className="bg-white rounded-lg shadow-lg p-6 mb-6">
-            <div className="flex justify-between items-center mb-4">
-              <h2 className="text-2xl font-semibold">{weather.city}</h2>
-              <div className="flex items-center">
-                {getWeatherIcon(weather.condition.text.toLowerCase())}
-                <span className="ml-2 text-gray-600">
-                  {weather.condition.text}
-                </span>
-              </div>
+            <div className="flex mb-6 space-x-2">
+              <Input
+                type="text"
+                placeholder="Masukkan nama kota..."
+                value={location}
+                onChange={handleLocationChange}
+                // className="flex-1 p-2 rounded-l border border-gray-300 focus:outline-none"
+                onKeyPress={(e) => {
+                  if (e.key === "Enter") {
+                    handleSubmit();
+                  }
+                }}
+              />
+              <Button
+                onClick={handleSubmit}
+                // className="bg-blue-600 text-white px-4 py-2 rounded-r hover:bg-blue-700 transition"
+              >
+                Cari
+              </Button>
             </div>
 
-            <div className="text-5xl font-bold text-center mb-4">
-              {weather.temp}°{units === "metric" ? "C" : "F"}
-            </div>
-
-            <div className="text-center text-gray-500 mb-4">
-              Terasa seperti: {weather.feelslike}°
-              {units === "metric" ? "C" : "F"}
-            </div>
-
-            <div className="grid grid-cols-2 gap-4 text-center">
-              <div className="bg-blue-50 p-2 rounded">
-                <div className="text-blue-700 font-semibold">Kelembaban</div>
-                <div>{weather.humidity}%</div>
-              </div>
-              <div className="bg-blue-50 p-2 rounded">
-                <div className="text-blue-700 font-semibold">
-                  Kecepatan Angin
-                </div>
-                <div>
-                  {weather.windSpeed} {units === "metric" ? "km/h" : "mph"}
-                </div>
-              </div>
+            {/* Toggle unit suhu */}
+            <div className="flex justify-end mb-4">
+              <button
+                onClick={toggleUnits}
+                className="bg-gray-200 px-3 py-1 rounded text-sm hover:bg-gray-300 transition"
+              >
+                {units === "metric" ? "°C" : "°F"} →{" "}
+                {units === "metric" ? "°F" : "°C"}
+              </button>
             </div>
           </div>
-        )}
 
-        {/* Perkiraan 5 hari */}
-        {forecast.length > 0 && !loading && (
-          <div className="bg-white rounded-lg shadow-lg p-6">
-            <h3 className="text-xl font-semibold mb-4">Perkiraan 5 Hari</h3>
-            <div className="grid grid-cols-5 gap-2">
-              {forecast.map((day, index) => (
-                <div key={index} className="flex flex-col items-center p-2">
-                  <div className="font-medium">{day.date.toString()}</div>
-                  <div className="my-2">
-                    {getWeatherIcon(day.condition.text.toLowerCase())}
+          {/* Loading state */}
+          {loading && (
+            <div className="flex justify-center py-8">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-700"></div>
+            </div>
+          )}
+
+          {/* Error state */}
+          {error && (
+            <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+              {error}
+            </div>
+          )}
+
+          {/* Cuaca saat ini */}
+          {weather && !loading && (
+            <div className="bg-white rounded-lg shadow-lg p-6 mb-6">
+              <div className="flex justify-between items-center mb-4">
+                <h2 className="text-2xl font-semibold">{weather.city}</h2>
+                <div className="flex items-center">
+                  {getWeatherIcon(weather.condition.text.toLowerCase())}
+                  <span className="ml-2 text-gray-600">
+                    {weather.condition.text}
+                  </span>
+                </div>
+              </div>
+
+              <div className="text-5xl font-bold text-center mb-4">
+                {weather.temp}°{units === "metric" ? "C" : "F"}
+              </div>
+
+              <div className="text-center text-gray-500 mb-4">
+                Terasa seperti: {weather.feelslike}°
+                {units === "metric" ? "C" : "F"}
+              </div>
+
+              <div className="grid grid-cols-2 gap-4 text-center">
+                <div className="bg-blue-50 p-2 rounded">
+                  <div className="text-blue-700 font-semibold">Kelembaban</div>
+                  <div>{weather.humidity}%</div>
+                </div>
+                <div className="bg-blue-50 p-2 rounded">
+                  <div className="text-blue-700 font-semibold">
+                    Kecepatan Angin
                   </div>
-                  <div className="text-sm">
-                    {day.day.maxtemp}°{units === "metric" ? "C" : "F"}
+                  <div>
+                    {weather.windSpeed} {units === "metric" ? "km/h" : "mph"}
                   </div>
                 </div>
-              ))}
+              </div>
             </div>
-          </div>
-        )}
+          )}
 
-        <div className="text-center text-gray-600 mt-6 text-sm">
-          {/* Data diperbarui terakhir: {new Date().toLocaleString("id-ID")} */}
+          {/* Perkiraan 5 hari */}
+          {forecast.length > 0 && !loading && (
+            <div className="bg-white rounded-lg shadow-lg p-6">
+              <h3 className="text-xl font-semibold mb-4">Perkiraan 5 Hari</h3>
+              <div className="grid grid-cols-5 gap-2">
+                {forecast.map((day, index) => (
+                  <div key={index} className="flex flex-col items-center p-2">
+                    <div className="font-medium">{day.date.toString()}</div>
+                    <div className="my-2">
+                      {getWeatherIcon(day.condition.text.toLowerCase())}
+                    </div>
+                    <div className="text-sm">
+                      {day.day.maxtemp}°{units === "metric" ? "C" : "F"}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          <div className="text-center text-gray-600 mt-6 text-sm">
+            {/* Data diperbarui terakhir: {new Date().toLocaleString("id-ID")} */}
+          </div>
         </div>
       </div>
-    </div>
+    </main>
   );
 }
