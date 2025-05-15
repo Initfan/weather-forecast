@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Sun, Cloud, CloudRain, CloudSnow } from "lucide-react";
 import { CurrentWeatherData, ForecastData } from "@/utils/type";
 import { Input } from "@/components/ui/input";
@@ -15,7 +15,7 @@ export default function WeatherApp() {
   const [units, setUnits] = useState("metric"); // metric atau imperial
 
   // Fungsi untuk mendapatkan data cuaca (simulasi)
-  const fetchWeather = async () => {
+  const fetchWeather = useCallback(async () => {
     setLoading(true);
     setError(null);
 
@@ -75,12 +75,12 @@ export default function WeatherApp() {
       setError("Gagal memuat data cuaca");
       setLoading(false);
     }
-  };
+  }, [location, units]);
 
   // Menjalankan fungsi saat komponen dimuat pertama kali
   useEffect(() => {
     fetchWeather();
-  }, [fetchWeather]);
+  }, []);
 
   const getWeatherIcon = (condition: string) => {
     console.log(condition);
