@@ -5,6 +5,8 @@ import { CurrentWeatherData, ForecastData } from "@/utils/type";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
+// pulling page.tsx
+
 // Komponen utama aplikasi cuaca
 export default function WeatherApp() {
   const [location, setLocation] = useState("Jakarta");
