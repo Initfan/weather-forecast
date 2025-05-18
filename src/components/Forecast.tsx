@@ -12,7 +12,7 @@ const Forecast = ({
 	units: "metric" | "imperial";
 	loading: boolean;
 }) => {
-	return loading ? (
+	return forecast.length == 0 ? (
 		<Skeleton className="w-full h-[200px]"></Skeleton>
 	) : (
 		<div className="bg-white rounded-lg shadow-lg p-6">

@@ -18,26 +18,19 @@ import {
 	PopoverTrigger,
 } from "@/components/ui/popover";
 import { useEffect, useState } from "react";
-import { Location } from "@/utils/type";
+import { CurrentWeatherData, Location } from "@/utils/type";
 import { Skeleton } from "./ui/skeleton";
-
-const DEFAULT_LOCATION = [
-	{
-		label: "Indonesia, Jakarta",
-		value: 3026315,
-		lat: -6.21,
-		lon: 106.85,
-	},
-];
 
 export function SearchBox({
 	selectedLocation,
+	weather,
 }: {
 	selectedLocation: (cord: string) => void;
+	weather?: CurrentWeatherData;
 }) {
 	const [open, setOpen] = useState(false);
-	const [value, setValue] = useState("Indonesia, Jakarta");
-	const [location, setLocation] = useState<Location[]>(DEFAULT_LOCATION);
+	const [location, setLocation] = useState<Location[]>([]);
+	const [value, setValue] = useState<string>();
 	const [search, setSearch] = useState<string>();
 	const [loading, setLoading] = useState(false);
 
@@ -70,6 +63,18 @@ export function SearchBox({
 	};
 
 	useEffect(() => {
+		if (weather?.city && !search) {
+			setValue(weather.city);
+			setLocation([
+				{
+					label: weather.city,
+					value: Math.random(), // Still not ideal, better use weather.id if available
+				},
+			]);
+		}
+	}, [weather]);
+
+	useEffect(() => {
 		if (search && search.length > 0) {
 			const timeoutId = setTimeout(() => {
 				SearchLocation(search!);
@@ -78,7 +83,9 @@ export function SearchBox({
 		}
 	}, [search]);
 
-	return (
+	return !weather ? (
+		<Skeleton className="w-full h-8" />
+	) : (
 		<Popover open={open} onOpenChange={setOpen}>
 			<PopoverTrigger asChild>
 				<Button

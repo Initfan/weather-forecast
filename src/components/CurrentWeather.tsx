@@ -6,13 +6,13 @@ import { Skeleton } from "@/components/ui/skeleton";
 const CurrentWeather = ({
 	weather,
 	units,
-	loading,
-}: {
-	weather: CurrentWeatherData;
+}: // loading,
+{
+	weather?: CurrentWeatherData;
 	units: "metric" | "imperial";
-	loading: boolean;
+	// loading: boolean;
 }) => {
-	return loading ? (
+	return !weather ? (
 		<Skeleton className="w-full h-[264px] p-6" />
 	) : (
 		<div className="bg-white rounded-lg shadow-lg p-6">

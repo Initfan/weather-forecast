@@ -11,6 +11,7 @@ import Search from "../components/search";
 import CurrentWeather from "../components/CurrentWeather";
 import Forecast from "../components/Forecast";
 import { SearchBox } from "@/components/SearchBox";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export default function WeatherApp() {
 	const [location, setLocation] = useState("Jakarta");
@@ -100,18 +101,14 @@ export default function WeatherApp() {
 	};
 
 	const currentPosition = (position: GeolocationPosition) => {
-		console.log(position);
+		const cord = `${position.coords.latitude},${position.coords.longitude}`;
+		fetchWeather(cord);
 	};
 
 	useEffect(() => {
 		navigator.geolocation.getCurrentPosition(currentPosition);
 		setCurrentTime(new Date().toLocaleString("id-ID"));
-		fetchWeather();
 	}, []);
-
-	const handleLocationChange = (e: ChangeEvent<HTMLInputElement>) => {
-		setLocation(e.target!.value);
-	};
 
 	const toggleUnits = () => {
 		setUnits(units === "metric" ? "imperial" : "metric");
@@ -126,7 +123,10 @@ export default function WeatherApp() {
 					</h1>
 
 					<div className="bg-white rounded-lg shadow-lg p-6 space-y-4">
-						<SearchBox selectedLocation={selectedLocation} />
+						<SearchBox
+							weather={weather}
+							selectedLocation={selectedLocation}
+						/>
 
 						<div className="flex justify-end mb-4">
 							<button
@@ -145,21 +145,13 @@ export default function WeatherApp() {
 						</div>
 					)}
 
-					{weather && (
-						<CurrentWeather
-							units={units}
-							weather={weather}
-							loading={loading}
-						/>
-					)}
+					<CurrentWeather units={units} weather={weather} />
 
-					{forecast.length > 0 && (
-						<Forecast
-							forecast={forecast}
-							units={units}
-							loading={loading}
-						/>
-					)}
+					<Forecast
+						forecast={forecast}
+						units={units}
+						loading={loading}
+					/>
 
 					<div className="text-center text-gray-600 mt-6 text-sm">
 						Data diperbarui terakhir: {currentTime}
