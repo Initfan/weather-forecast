@@ -26,6 +26,13 @@ export interface ForecastData {
 	};
 }
 
+export interface Location {
+	label: string;
+	value: number;
+	lat: number;
+	lon: number;
+}
+
 export interface CurrentWeatherData {
 	city: string;
 	cloud: number;
