@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect, useCallback, ChangeEvent } from "react";
-import { Sun, Cloud, CloudRain, CloudSnow } from "lucide-react";
+import { Sun, Cloud, CloudRain, CloudSnow, Snowflake } from "lucide-react";
 import { CurrentWeatherData, ForecastData } from "@/utils/type";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -18,7 +18,6 @@ export default function WeatherApp() {
 
 	// Fungsi untuk mendapatkan data cuaca (simulasi)
 	const fetchWeather = useCallback(async () => {
-		console.log("fetching weather");
 		setLoading(true);
 		setError(null);
 
@@ -96,23 +95,16 @@ export default function WeatherApp() {
 	}, []);
 
 	const getWeatherIcon = (condition: string) => {
-		const rain = [
-			"moderate rain",
-			"patchy rain nearby",
-			"patchy rain",
-			"patchy light drizzle",
-		];
-		const snow = ["light snow", "heavy snow", "snow"];
-		const cloudly = ["partly cloudy"];
-
-		if (rain.includes(condition)) {
+		if (condition.includes("rain")) {
 			return <CloudRain size={32} className="text-blue-500" />;
-		} else if (snow.includes(condition)) {
+		} else if (condition.includes("snow")) {
 			return <CloudSnow size={32} className="text-blue-200" />;
-		} else if (condition === "sunny") {
+		} else if (condition.includes("sunny")) {
 			return <Sun size={32} className="text-yellow-500" />;
-		} else if (cloudly.includes(condition)) {
+		} else if (condition.includes("cloudy")) {
 			return <Cloud size={32} className="text-gray-500" />;
+		} else if (condition.includes("ice")) {
+			return <Snowflake size={32} className="text-gray-500" />;
 		}
 	};
 
