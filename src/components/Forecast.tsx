@@ -16,8 +16,10 @@ const Forecast = ({
 		<Skeleton className="w-full h-[200px]"></Skeleton>
 	) : (
 		<div className="bg-white rounded-lg shadow-lg p-6">
-			<h3 className="text-xl font-semibold mb-4">Perkiraan 5 Hari</h3>
-			<div className="grid grid-cols-5 gap-2">
+			<h3 className="text-xl font-semibold mb-4">
+				Perkiraan {forecast.length} Hari
+			</h3>
+			<div className={`grid grid-cols-${forecast.length} gap-2`}>
 				{forecast.map((day, index) => (
 					<div key={index} className="flex flex-col items-center p-2">
 						<div className="font-medium">
