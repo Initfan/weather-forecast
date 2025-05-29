@@ -1,4 +1,11 @@
-import { Sun, Cloud, CloudRain, CloudSnow, Snowflake } from "lucide-react";
+import {
+	Sun,
+	Cloud,
+	CloudRain,
+	CloudSnow,
+	Snowflake,
+	CloudFog,
+} from "lucide-react";
 import React from "react";
 
 const WeatherIcon = ({ condition }: { condition: string }) => {
@@ -6,6 +13,8 @@ const WeatherIcon = ({ condition }: { condition: string }) => {
 		return <CloudRain size={32} className="text-blue-500" />;
 	} else if (condition.includes("snow")) {
 		return <CloudSnow size={32} className="text-blue-200" />;
+	} else if (condition.includes("mist")) {
+		return <CloudFog size={32} className="text-gray-500" />;
 	} else if (condition.includes("sunny")) {
 		return <Sun size={32} className="text-yellow-500" />;
 	} else if (condition.includes("cloudy")) {
